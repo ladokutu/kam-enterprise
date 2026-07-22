@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { Code2, Brain, Server, CheckCircle } from "lucide-react";
-import type { Service } from "@/generated/prisma/client";
+import type { Service } from "@prisma/client";
 
 const iconMap: Record<string, React.ReactNode> = {
   Code2: <Code2 className="h-10 w-10 text-primary" />,

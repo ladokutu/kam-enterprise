@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { ExternalLink } from "lucide-react";
-import type { Portfolio } from "@/generated/prisma/client";
+import type { Portfolio } from "@prisma/client";
 
 export const metadata = {
   title: "Portofolio | KAM Enterprise",

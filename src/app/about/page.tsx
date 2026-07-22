@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { Target, Eye, Heart } from "lucide-react";
-import type { TeamMember } from "@/generated/prisma/client";
+import type { TeamMember } from "@prisma/client";
 
 export const metadata = {
   title: "Tentang Kami | KAM Enterprise",

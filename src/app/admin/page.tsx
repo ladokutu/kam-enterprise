@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { MessageSquare, Briefcase, Users, Star } from "lucide-react";
-import type { Contact } from "@/generated/prisma/client";
+import type { Contact } from "@prisma/client";
 
 export const metadata = {
   title: "Admin Dashboard | KAM Enterprise",

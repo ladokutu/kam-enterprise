@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import type { Service, Testimonial } from "@/generated/prisma/client";
+import type { Service, Testimonial } from "@prisma/client";
 import { Code2, Brain, Server, ArrowRight, Star, CheckCircle } from "lucide-react";
 import Link from "next/link";
 
