@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 
 export async function GET() {
   const items = await prisma.testimonial.findMany({ orderBy: { createdAt: "desc" } });
@@ -17,6 +18,7 @@ export async function POST(req: NextRequest) {
       imageUrl: body.imageUrl || "",
     },
   });
+  revalidatePath("/");
   return NextResponse.json(item, { status: 201 });
 }
 
@@ -32,5 +34,6 @@ export async function PUT(req: NextRequest) {
       imageUrl: body.imageUrl || "",
     },
   });
+  revalidatePath("/");
   return NextResponse.json(item);
 }

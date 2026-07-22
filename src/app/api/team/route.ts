@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 
 export async function GET() {
   const members = await prisma.teamMember.findMany({ orderBy: { order: "asc" } });
@@ -17,6 +18,7 @@ export async function POST(req: NextRequest) {
       order: body.order || 0,
     },
   });
+  revalidatePath("/about");
   return NextResponse.json(member, { status: 201 });
 }
 
@@ -32,5 +34,6 @@ export async function PUT(req: NextRequest) {
       order: body.order || 0,
     },
   });
+  revalidatePath("/about");
   return NextResponse.json(member);
 }

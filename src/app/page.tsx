@@ -3,6 +3,8 @@ import type { Service, Testimonial } from "@prisma/client";
 import { Code2, Brain, Server, ArrowRight, Star, CheckCircle } from "lucide-react";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 const iconMap: Record<string, React.ReactNode> = {
   Code2: <Code2 className="h-8 w-8 text-primary" />,
   Brain: <Brain className="h-8 w-8 text-primary" />,

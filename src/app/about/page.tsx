@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { Target, Eye, Heart } from "lucide-react";
 import type { TeamMember } from "@prisma/client";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Tentang Kami | KAM Enterprise",
   description: "Kenali lebih dekat KAM Enterprise, visi, misi, dan tim kami.",

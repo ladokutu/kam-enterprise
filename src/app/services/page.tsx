@@ -8,6 +8,8 @@ const iconMap: Record<string, React.ReactNode> = {
   Server: <Server className="h-10 w-10 text-primary" />,
 };
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Layanan | KAM Enterprise",
   description: "Layanan pengembangan aplikasi, konsultasi IT, dan setup server & network dari KAM Enterprise.",

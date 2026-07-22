@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { ExternalLink } from "lucide-react";
 import type { Portfolio } from "@prisma/client";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Portofolio | KAM Enterprise",
   description: "Proyek-proyek terbaik yang telah kami kerjakan.",

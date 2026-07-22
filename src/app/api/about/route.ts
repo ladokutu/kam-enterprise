@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 
 export async function GET() {
   let about = await prisma.about.findFirst();
@@ -41,5 +42,8 @@ export async function PUT(req: NextRequest) {
       },
     });
   }
+  revalidatePath("/");
+  revalidatePath("/about");
+  revalidatePath("/contact");
   return NextResponse.json(about);
 }

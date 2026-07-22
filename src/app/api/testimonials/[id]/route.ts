@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -14,11 +15,13 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       imageUrl: body.imageUrl || "",
     },
   });
+  revalidatePath("/");
   return NextResponse.json(testimonial);
 }
 
 export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   await prisma.testimonial.delete({ where: { id: parseInt(id) } });
+  revalidatePath("/");
   return NextResponse.json({ ok: true });
 }

@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -19,6 +20,9 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     },
   });
 
+  revalidatePath("/");
+  revalidatePath("/services");
+
   return NextResponse.json({
     ...item,
     features: typeof item.features === "string" ? JSON.parse(item.features) : item.features,
@@ -28,5 +32,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   await prisma.service.delete({ where: { id: parseInt(id) } });
+  revalidatePath("/");
+  revalidatePath("/services");
   return NextResponse.json({ ok: true });
 }
