@@ -17,18 +17,22 @@ export default function AdminLoginPage() {
     setIsLoading(true);
     setError("");
 
-    const result = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
+    try {
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
 
-    if (result?.error) {
-      setError("Email atau password salah.");
+      if (result?.error) {
+        setError("Email atau password salah.");
+        setIsLoading(false);
+      } else {
+        window.location.href = "/admin";
+      }
+    } catch {
+      setError("Terjadi kesalahan. Silakan coba lagi.");
       setIsLoading(false);
-    } else {
-      router.push("/admin");
-      router.refresh();
     }
   };
 
