@@ -22,11 +22,14 @@ export default function AdminLoginPage() {
         email,
         password,
         redirect: false,
+        callbackUrl: "/admin",
       });
 
       if (result?.error) {
         setError("Email atau password salah.");
         setIsLoading(false);
+      } else if (result?.url) {
+        window.location.href = result.url;
       } else {
         window.location.href = "/admin";
       }
