@@ -1,32 +1,27 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";
+import { NextResponse } from "next/server";
+import NextAuth from "next-auth";
+import authConfig from "./auth.config";
 
-export async function middleware(req: NextRequest) {
-  const secret = process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET;
-  if (!secret) return NextResponse.next();
+const { auth } = NextAuth(authConfig);
 
-  // NextAuth v5 uses different cookie names:
-  // HTTP (localhost): "authjs.session-token"
-  // HTTPS (Vercel): "__Secure-authjs.session-token"
-  const isHttps = req.nextUrl.protocol === "https:";
-  const salt = isHttps ? "__Secure-" : "";
-
-  const token = await getToken({ req, secret, salt });
-
+export default auth((req) => {
   const pathname = req.nextUrl.pathname;
   const isOnLogin = pathname === "/admin/login";
   const isOnAdmin = pathname.startsWith("/admin") && !isOnLogin;
+  const isLoggedIn = !!req.auth;
 
-  if (isOnAdmin && !token) {
+  console.log(`[Middleware] ${pathname} | isLoggedIn: ${isLoggedIn}`);
+
+  if (isOnAdmin && !isLoggedIn) {
     return NextResponse.redirect(new URL("/admin/login", req.url));
   }
 
-  if (isOnLogin && token) {
+  if (isOnLogin && isLoggedIn) {
     return NextResponse.redirect(new URL("/admin", req.url));
   }
 
   return NextResponse.next();
-}
+});
 
 export const config = {
   matcher: ["/admin/:path*"],
