@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   session: { strategy: "jwt" },
+  trustHost: true,
   pages: {
     signIn: "/admin/login",
   },
@@ -56,21 +57,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.id = token.id as string;
       }
       return session;
-    },
-    async authorized({ auth, request }) {
-      const isLoggedIn = !!auth?.user;
-      const isOnAdmin = request.nextUrl.pathname.startsWith("/admin");
-      const isOnLogin = request.nextUrl.pathname.startsWith("/admin/login");
-
-      if (isOnAdmin && !isLoggedIn) {
-        return Response.redirect(new URL("/admin/login", request.nextUrl));
-      }
-
-      if (isOnLogin && isLoggedIn) {
-        return Response.redirect(new URL("/admin", request.nextUrl));
-      }
-
-      return true;
     },
   },
 });
