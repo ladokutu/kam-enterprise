@@ -31,6 +31,9 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: `${brandName} | Solusi Digital Terpercaya`,
     description,
+    icons: {
+      icon: "/favicon.ico",
+    },
   };
 }
 
