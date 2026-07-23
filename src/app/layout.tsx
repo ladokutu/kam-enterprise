@@ -16,25 +16,36 @@ const geistMono = Geist_Mono({
 });
 
 export async function generateMetadata(): Promise<Metadata> {
-  const [about, settings] = await Promise.all([
-    prisma.about.findFirst(),
-    prisma.setting.findMany(),
-  ]);
-  const get = (key: string) => settings.find((s) => s.key === key)?.value;
+  try {
+    const [about, settings] = await Promise.all([
+      prisma.about.findFirst(),
+      prisma.setting.findMany(),
+    ]);
+    const get = (key: string) => settings.find((s) => s.key === key)?.value;
 
-  const brandName = about?.brandName || get("company_name") || "KAM Enterprise";
-  const description =
-    about?.description ||
-    get("company_description") ||
-    "Perusahaan IT yang berfokus pada pengembangan aplikasi, konsultasi IT, dan setup server & network.";
+    const brandName = about?.brandName || get("company_name") || "KAM Enterprise";
+    const description =
+      about?.description ||
+      get("company_description") ||
+      "Perusahaan IT yang berfokus pada pengembangan aplikasi, konsultasi IT, dan setup server & network.";
 
-  return {
-    title: `${brandName} | Solusi Digital Terpercaya`,
-    description,
-    icons: {
-      icon: "/favicon.ico",
-    },
-  };
+    return {
+      title: `${brandName} | Solusi Digital Terpercaya`,
+      description,
+      icons: {
+        icon: "/icon.ico",
+      },
+    };
+  } catch {
+    return {
+      title: "KAM Enterprise | Solusi Digital Terpercaya",
+      description:
+        "Perusahaan IT yang berfokus pada pengembangan aplikasi, konsultasi IT, dan setup server & network.",
+      icons: {
+        icon: "/icon.ico",
+      },
+    };
+  }
 }
 
 export default function RootLayout({
