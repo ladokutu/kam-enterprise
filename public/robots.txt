@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin
 Disallow: /api
 
-Sitemap: https://kamenterprise.com/sitemap.xml
+Sitemap: https://kam-enterprise.com/sitemap.xml
