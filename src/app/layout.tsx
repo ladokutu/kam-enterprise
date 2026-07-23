@@ -33,7 +33,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title: `${brandName} | Solusi Digital Terpercaya`,
       description,
       icons: {
-        icon: "/icon.ico",
+        icon: "/favicon.ico",
       },
     };
   } catch {
@@ -42,7 +42,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description:
         "Perusahaan IT yang berfokus pada pengembangan aplikasi, konsultasi IT, dan setup server & network.",
       icons: {
-        icon: "/icon.ico",
+        icon: "/favicon.ico",
       },
     };
   }
