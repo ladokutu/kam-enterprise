@@ -1,5 +1,6 @@
-// Middleware removed - authentication is handled by JWT tokens in API routes
+// No-op middleware - authentication is handled by JWT in API routes
+import { NextResponse } from "next/server";
 
-export const config = {
-  matcher: [],
-};
+export default function middleware() {
+  return NextResponse.next();
+}
