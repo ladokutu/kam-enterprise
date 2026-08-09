@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import { getAuthenticatedUser, unauthorizedResponse } from "@/lib/auth";
 
 const defaultSettings: Record<string, string> = {
   primaryColor: "#6366f1",
@@ -25,6 +26,11 @@ export async function GET() {
 }
 
 export async function PUT(req: NextRequest) {
+  const user = await getAuthenticatedUser(req);
+  if (!user) {
+    return unauthorizedResponse();
+  }
+
   const body = await req.json();
   const updates = Object.entries(body) as [string, string][];
 

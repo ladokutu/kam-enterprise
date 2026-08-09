@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
+import { getAuthenticatedUser, unauthorizedResponse } from "@/lib/auth";
 
 export async function GET() {
   let about = await prisma.about.findFirst();
@@ -19,6 +20,11 @@ export async function GET() {
 }
 
 export async function PUT(req: NextRequest) {
+  const user = await getAuthenticatedUser(req);
+  if (!user) {
+    return unauthorizedResponse();
+  }
+
   const body = await req.json();
   let about = await prisma.about.findFirst();
   if (!about) {

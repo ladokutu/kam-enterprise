@@ -52,16 +52,33 @@ export default function AdminSettingsPage() {
   useEffect(() => { fetchSettings(); }, []);
 
   async function fetchSettings() {
-    const res = await fetch("/api/settings");
+    const token = localStorage.getItem("adminToken");
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
+    const res = await fetch("/api/settings", {
+      headers,
+      cache: "no-store",
+    });
     const data = await res.json();
     setSettings(data);
     setLoading(false);
   }
 
   async function handleSave() {
+    const token = localStorage.getItem("adminToken");
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
     const res = await fetch("/api/settings", {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify(settings),
     });
     if (res.ok) {
@@ -115,7 +132,7 @@ export default function AdminSettingsPage() {
         </div>
       </div>
 
-      <div className="grid gap-6 max-w-4xl">
+      <div className="grid gap-6">
         {/* Colors */}
         <div className="rounded-xl border bg-card p-6">
           <h2 className="text-lg font-semibold mb-4">🎨 Warna</h2>

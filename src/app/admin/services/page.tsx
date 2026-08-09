@@ -32,7 +32,18 @@ export default function AdminServicesPage() {
 
   async function fetchServices() {
     try {
-      const res = await fetch("/api/services");
+      const token = localStorage.getItem("adminToken");
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+      };
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+
+      const res = await fetch("/api/services", {
+        headers,
+        cache: "no-store",
+      });
       if (!res.ok) {
         console.error("Failed to fetch services:", res.status);
         setServices([]);
@@ -81,9 +92,17 @@ export default function AdminServicesPage() {
     const url = isNew ? "/api/services" : `/api/services/${editing.id}`;
     const method = isNew ? "POST" : "PUT";
 
+    const token = localStorage.getItem("adminToken");
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
     const res = await fetch(url, {
       method,
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify(editing),
     });
 
@@ -97,7 +116,16 @@ export default function AdminServicesPage() {
   async function handleDelete(id: number) {
     if (!confirm("Yakin ingin menghapus layanan ini?")) return;
 
-    const res = await fetch(`/api/services/${id}`, { method: "DELETE" });
+    const token = localStorage.getItem("adminToken");
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
+    const res = await fetch(`/api/services/${id}`, {
+      method: "DELETE",
+      headers,
+    });
     if (res.ok) fetchServices();
   }
 

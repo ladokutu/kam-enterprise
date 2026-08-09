@@ -22,19 +22,49 @@ export default function AdminContactsPage() {
   useEffect(() => { fetchContacts(); }, []);
 
   async function fetchContacts() {
-    const res = await fetch("/api/contacts");
+    const token = localStorage.getItem("adminToken");
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
+    const res = await fetch("/api/contacts", {
+      headers,
+      cache: "no-store",
+    });
     setContacts(await res.json());
     setLoading(false);
   }
 
   async function markRead(id: number) {
-    await fetch(`/api/contacts/${id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ isRead: true }) });
+    const token = localStorage.getItem("adminToken");
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
+    await fetch(`/api/contacts/${id}`, {
+      method: "PUT",
+      headers,
+      body: JSON.stringify({ isRead: true }),
+    });
     fetchContacts();
   }
 
   async function handleDelete(id: number) {
     if (!confirm("Yakin ingin menghapus?")) return;
-    await fetch(`/api/contacts/${id}`, { method: "DELETE" });
+    const token = localStorage.getItem("adminToken");
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
+    await fetch(`/api/contacts/${id}`, {
+      method: "DELETE",
+      headers,
+    });
     setSelected(null);
     fetchContacts();
   }

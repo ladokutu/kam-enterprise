@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
+import { getAuthenticatedUser, unauthorizedResponse } from "@/lib/auth";
 
 export async function GET() {
   const services = await prisma.service.findMany({ orderBy: { order: "asc" } });
@@ -8,6 +9,11 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+  const user = await getAuthenticatedUser(req);
+  if (!user) {
+    return unauthorizedResponse();
+  }
+
   const body = await req.json();
   const service = await prisma.service.create({
     data: {
@@ -25,6 +31,11 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
+  const user = await getAuthenticatedUser(req);
+  if (!user) {
+    return unauthorizedResponse();
+  }
+
   const body = await req.json();
   const service = await prisma.service.update({
     where: { id: body.id },

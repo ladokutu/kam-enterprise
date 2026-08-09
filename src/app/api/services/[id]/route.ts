@@ -1,8 +1,14 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
+import { getAuthenticatedUser, unauthorizedResponse } from "@/lib/auth";
 
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const user = await getAuthenticatedUser(req);
+  if (!user) {
+    return unauthorizedResponse();
+  }
+
   const { id } = await params;
   const body = await req.json();
 
@@ -29,7 +35,12 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   });
 }
 
-export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const user = await getAuthenticatedUser(req);
+  if (!user) {
+    return unauthorizedResponse();
+  }
+
   const { id } = await params;
   await prisma.service.delete({ where: { id: parseInt(id) } });
   revalidatePath("/");

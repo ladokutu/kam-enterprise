@@ -20,7 +20,16 @@ export default function AdminHeroPage() {
   useEffect(() => { fetchHero(); }, []);
 
   async function fetchHero() {
-    const res = await fetch("/api/hero");
+    const token = localStorage.getItem("adminToken");
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
+    const res = await fetch("/api/hero", {
+      headers,
+      cache: "no-store",
+    });
     const data = await res.json();
     setHero(data);
     setLoading(false);
@@ -28,9 +37,17 @@ export default function AdminHeroPage() {
 
   async function handleSave() {
     if (!hero) return;
+    const token = localStorage.getItem("adminToken");
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
     const res = await fetch("/api/hero", {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify(hero),
     });
     if (res.ok) {
@@ -51,7 +68,7 @@ export default function AdminHeroPage() {
         </button>
       </div>
 
-      <div className="rounded-xl border bg-card p-6 max-w-2xl">
+      <div className="rounded-xl border bg-card p-6">
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium mb-1">Headline</label>

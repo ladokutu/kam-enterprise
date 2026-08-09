@@ -171,6 +171,8 @@ export default function ContactPage() {
                       onChange={(e) => setFormState({ ...formState, email: e.target.value })}
                       className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                       placeholder="john@example.com"
+                      pattern="[^s@]+@[^s@]+\.[^s@]+"
+                      title="Masukkan alamat email yang valid (contoh: nama@domain.com)"
                     />
                   </div>
                 </div>
@@ -185,7 +187,9 @@ export default function ContactPage() {
                       value={formState.phone}
                       onChange={(e) => setFormState({ ...formState, phone: e.target.value })}
                       className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                      placeholder="+62 812-3456-7890"
+                      placeholder="081234567890 atau +6281234567890"
+                      pattern="(\+62|62|0)[0-9]{8,12}"
+                      title="Masukkan nomor telepon yang valid (contoh: 081234567890 atau +6281234567890)"
                     />
                   </div>
                   <div>

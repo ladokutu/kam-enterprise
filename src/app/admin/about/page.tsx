@@ -27,7 +27,16 @@ export default function AdminAboutPage() {
   useEffect(() => { fetchAbout(); }, []);
 
   async function fetchAbout() {
-    const res = await fetch("/api/about");
+    const token = localStorage.getItem("adminToken");
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
+    const res = await fetch("/api/about", {
+      headers,
+      cache: "no-store",
+    });
     const data = await res.json();
     setAbout(data);
     setLoading(false);
@@ -35,9 +44,17 @@ export default function AdminAboutPage() {
 
   async function handleSave() {
     if (!about) return;
+    const token = localStorage.getItem("adminToken");
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
     const res = await fetch("/api/about", {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify(about),
     });
     if (res.ok) {
@@ -58,7 +75,7 @@ export default function AdminAboutPage() {
         </button>
       </div>
 
-      <div className="rounded-xl border bg-card p-6 max-w-2xl">
+      <div className="rounded-xl border bg-card p-6">
         <div className="space-y-4">
           {/* Brand & Logo Section */}
           <div className="pb-4 border-b">

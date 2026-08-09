@@ -21,7 +21,16 @@ export default function AdminTestimonialsPage() {
   useEffect(() => { fetchItems(); }, []);
 
   async function fetchItems() {
-    const res = await fetch("/api/testimonials");
+    const token = localStorage.getItem("adminToken");
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
+    const res = await fetch("/api/testimonials", {
+      headers,
+      cache: "no-store",
+    });
     setItems(await res.json());
     setLoading(false);
   }
@@ -35,13 +44,34 @@ export default function AdminTestimonialsPage() {
     if (!editing) return;
     const url = isNew ? "/api/testimonials" : `/api/testimonials/${editing.id}`;
     const method = isNew ? "POST" : "PUT";
-    const res = await fetch(url, { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(editing) });
+    const token = localStorage.getItem("adminToken");
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
+    const res = await fetch(url, {
+      method,
+      headers,
+      body: JSON.stringify(editing),
+    });
     if (res.ok) { setEditing(null); setIsNew(false); fetchItems(); }
   }
 
   async function handleDelete(id: number) {
     if (!confirm("Yakin ingin menghapus?")) return;
-    const res = await fetch(`/api/testimonials/${id}`, { method: "DELETE" });
+    const token = localStorage.getItem("adminToken");
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
+    const res = await fetch(`/api/testimonials/${id}`, {
+      method: "DELETE",
+      headers,
+    });
     if (res.ok) fetchItems();
   }
 

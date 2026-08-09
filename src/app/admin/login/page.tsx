@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Lock, Mail } from "lucide-react";
 
@@ -12,25 +11,40 @@ export default function AdminLoginPage() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  // Check if already logged in
+  useEffect(() => {
+    const token = localStorage.getItem("adminToken");
+    if (token) {
+      router.replace("/admin");
+    }
+  }, [router]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
 
     try {
-      const result = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
       });
 
-      if (result?.error) {
-        setError("Email atau password salah.");
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || "Login gagal.");
         setIsLoading(false);
         return;
       }
 
-      // Login successful - force full page reload to server
+      // Store JWT token in localStorage
+      localStorage.setItem("adminToken", data.token);
+      
+      // Redirect to admin dashboard
       window.location.replace("/admin");
     } catch {
       setError("Terjadi kesalahan. Silakan coba lagi.");
