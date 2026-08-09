@@ -20,7 +20,14 @@ export default function AdminDashboardClient() {
 
   async function fetchDashboardData() {
     try {
-      const token = localStorage.getItem("adminToken");
+      // Get token from cookie
+      const cookies = document.cookie.split(";").reduce((acc, cookie) => {
+        const [key, value] = cookie.trim().split("=");
+        acc[key] = value;
+        return acc;
+      }, {} as Record<string, string>);
+
+      const token = cookies["admin_token"];
       const headers: Record<string, string> = {};
       if (token) {
         headers["Authorization"] = `Bearer ${token}`;

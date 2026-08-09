@@ -20,7 +20,32 @@ export async function getAuthenticatedUser(req: NextRequest) {
         name: "",
       };
     } catch (error) {
-      // Invalid JWT token, fall through to NextAuth
+      // Invalid JWT token, fall through to cookie check
+    }
+  }
+
+  // Try to get JWT token from cookie
+  const cookieHeader = req.headers.get("cookie");
+  if (cookieHeader) {
+    const cookies = cookieHeader.split(";").reduce((acc, cookie) => {
+      const [key, value] = cookie.trim().split("=");
+      acc[key] = value;
+      return acc;
+    }, {} as Record<string, string>);
+
+    const tokenCookie = cookies["admin_token"];
+    if (tokenCookie) {
+      try {
+        const decoded = jwt.verify(tokenCookie, JWT_SECRET) as { userId: number; email: string };
+        
+        return {
+          id: decoded.userId.toString(),
+          email: decoded.email,
+          name: "",
+        };
+      } catch (error) {
+        // Invalid JWT token in cookie
+      }
     }
   }
 
