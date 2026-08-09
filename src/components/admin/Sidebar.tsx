@@ -1,8 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { signOut } from "next-auth/react";
+import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   MessageSquare,
@@ -33,7 +32,13 @@ const menuItems = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
+
+  function handleLogout() {
+    localStorage.removeItem("adminToken");
+    router.push("/admin/login");
+  }
 
   return (
     <aside
@@ -89,7 +94,7 @@ export default function Sidebar() {
           {!collapsed && <span>Lihat Website</span>}
         </Link>
         <button
-          onClick={() => signOut({ callbackUrl: "/admin/login" })}
+          onClick={handleLogout}
           className="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground w-full"
           title={collapsed ? "Keluar" : undefined}
         >
