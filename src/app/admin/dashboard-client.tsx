@@ -9,6 +9,7 @@ type Stats = {
   portfolioCount: number;
   serviceCount: number;
   testimonialCount: number;
+  teamCount: number;
 };
 
 export default function AdminDashboardClient() {
@@ -59,6 +60,7 @@ export default function AdminDashboardClient() {
         { label: "Portofolio", value: stats.portfolioCount, icon: Briefcase },
         { label: "Layanan", value: stats.serviceCount, icon: Users },
         { label: "Testimoni", value: stats.testimonialCount, icon: Star },
+        { label: "Tim", value: stats.teamCount, icon: Users },
       ]
     : [];
 
@@ -81,7 +83,7 @@ export default function AdminDashboardClient() {
       </div>
 
       {/* Stats */}
-      <div className="grid gap-4 md:grid-cols-4 mb-8">
+      <div className="grid gap-4 md:grid-cols-5 mb-8">
         {statItems.map((stat) => (
           <div key={stat.label} className="rounded-xl border bg-card p-4">
             <div className="flex items-center gap-3">

@@ -9,12 +9,13 @@ export async function GET(req: NextRequest) {
       return unauthorizedResponse();
     }
 
-    const [contactCount, portfolioCount, serviceCount, testimonialCount] =
+    const [contactCount, portfolioCount, serviceCount, testimonialCount, teamCount] =
       await Promise.all([
         prisma.contact.count(),
         prisma.portfolio.count(),
         prisma.service.count(),
         prisma.testimonial.count(),
+        prisma.teamMember.count(),
       ]);
 
     return NextResponse.json({
@@ -22,6 +23,7 @@ export async function GET(req: NextRequest) {
       portfolioCount,
       serviceCount,
       testimonialCount,
+      teamCount,
     });
   } catch (error) {
     console.error("Dashboard stats error:", error);
