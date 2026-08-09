@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Save } from "lucide-react";
 
 type HeroData = {
@@ -13,11 +14,18 @@ type HeroData = {
 };
 
 export default function AdminHeroPage() {
+  const router = useRouter();
   const [hero, setHero] = useState<HeroData | null>(null);
   const [loading, setLoading] = useState(true);
   const [saved, setSaved] = useState(false);
 
-  useEffect(() => { fetchHero(); }, []);
+  useEffect(() => {
+    const token = localStorage.getItem("adminToken");
+    if (!token) {
+      router.replace("/admin/login");
+    }
+    fetchHero();
+  }, [router]);
 
   async function fetchHero() {
     const token = localStorage.getItem("adminToken");

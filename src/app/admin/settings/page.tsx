@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Save, RotateCcw } from "lucide-react";
 
 type ThemeSettings = {
@@ -45,11 +46,18 @@ const radiusOptions = [
 ];
 
 export default function AdminSettingsPage() {
+  const router = useRouter();
   const [settings, setSettings] = useState<ThemeSettings>(defaultTheme);
   const [loading, setLoading] = useState(true);
   const [saved, setSaved] = useState(false);
 
-  useEffect(() => { fetchSettings(); }, []);
+  useEffect(() => {
+    const token = localStorage.getItem("adminToken");
+    if (!token) {
+      router.replace("/admin/login");
+    }
+    fetchSettings();
+  }, [router]);
 
   async function fetchSettings() {
     const token = localStorage.getItem("adminToken");

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Trash2, Eye, EyeOff, Mail } from "lucide-react";
 
 type Contact = {
@@ -15,11 +16,18 @@ type Contact = {
 };
 
 export default function AdminContactsPage() {
+  const router = useRouter();
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<Contact | null>(null);
 
-  useEffect(() => { fetchContacts(); }, []);
+  useEffect(() => {
+    const token = localStorage.getItem("adminToken");
+    if (!token) {
+      router.replace("/admin/login");
+    }
+    fetchContacts();
+  }, [router]);
 
   async function fetchContacts() {
     const token = localStorage.getItem("adminToken");

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Plus, Pencil, Trash2, Save, X, Star } from "lucide-react";
 
 type Testimonial = {
@@ -13,12 +14,19 @@ type Testimonial = {
 };
 
 export default function AdminTestimonialsPage() {
+  const router = useRouter();
   const [items, setItems] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<Testimonial | null>(null);
   const [isNew, setIsNew] = useState(false);
 
-  useEffect(() => { fetchItems(); }, []);
+  useEffect(() => {
+    const token = localStorage.getItem("adminToken");
+    if (!token) {
+      router.replace("/admin/login");
+    }
+    fetchItems();
+  }, [router]);
 
   async function fetchItems() {
     const token = localStorage.getItem("adminToken");

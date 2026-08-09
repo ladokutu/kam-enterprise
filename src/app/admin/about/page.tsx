@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Save } from "lucide-react";
 
 type AboutData = {
@@ -20,11 +21,18 @@ type AboutData = {
 };
 
 export default function AdminAboutPage() {
+  const router = useRouter();
   const [about, setAbout] = useState<AboutData | null>(null);
   const [loading, setLoading] = useState(true);
   const [saved, setSaved] = useState(false);
 
-  useEffect(() => { fetchAbout(); }, []);
+  useEffect(() => {
+    const token = localStorage.getItem("adminToken");
+    if (!token) {
+      router.replace("/admin/login");
+    }
+    fetchAbout();
+  }, [router]);
 
   async function fetchAbout() {
     const token = localStorage.getItem("adminToken");

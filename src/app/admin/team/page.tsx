@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Plus, Pencil, Trash2, Save, X } from "lucide-react";
 
 type TeamMember = {
@@ -13,12 +14,19 @@ type TeamMember = {
 };
 
 export default function AdminTeamPage() {
+  const router = useRouter();
   const [members, setMembers] = useState<TeamMember[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<TeamMember | null>(null);
   const [isNew, setIsNew] = useState(false);
 
-  useEffect(() => { fetchMembers(); }, []);
+  useEffect(() => {
+    const token = localStorage.getItem("adminToken");
+    if (!token) {
+      router.replace("/admin/login");
+    }
+    fetchMembers();
+  }, [router]);
 
   async function fetchMembers() {
     const token = localStorage.getItem("adminToken");

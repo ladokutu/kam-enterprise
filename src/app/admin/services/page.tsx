@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Plus,
   Pencil,
@@ -21,14 +22,19 @@ type Service = {
 };
 
 export default function AdminServicesPage() {
+  const router = useRouter();
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<Service | null>(null);
   const [isNew, setIsNew] = useState(false);
 
   useEffect(() => {
+    const token = localStorage.getItem("adminToken");
+    if (!token) {
+      router.replace("/admin/login");
+    }
     fetchServices();
-  }, []);
+  }, [router]);
 
   async function fetchServices() {
     try {

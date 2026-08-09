@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Plus, Pencil, Trash2, Save, X, ExternalLink } from "lucide-react";
 
 type Portfolio = {
@@ -24,12 +25,19 @@ function parseTechStack(tech: string[] | string): string[] {
 }
 
 export default function AdminPortfolioPage() {
+  const router = useRouter();
   const [items, setItems] = useState<Portfolio[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<Portfolio | null>(null);
   const [isNew, setIsNew] = useState(false);
 
-  useEffect(() => { fetchItems(); }, []);
+  useEffect(() => {
+    const token = localStorage.getItem("adminToken");
+    if (!token) {
+      router.replace("/admin/login");
+    }
+    fetchItems();
+  }, [router]);
 
   async function fetchItems() {
     const token = localStorage.getItem("adminToken");
