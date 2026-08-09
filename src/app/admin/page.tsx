@@ -1,39 +1,92 @@
-import { prisma } from "@/lib/prisma";
-import { MessageSquare, Briefcase, Users, Star } from "lucide-react";
+"use client";
+
+import { useEffect, useState } from "react";
+import { MessageSquare, Briefcase, Users, Star, RefreshCw } from "lucide-react";
 import type { Contact } from "@prisma/client";
 
 export const metadata = {
   title: "Admin Dashboard | KAM Enterprise",
 };
 
-export default async function AdminDashboard() {
-  const [contactCount, portfolioCount, serviceCount, testimonialCount] =
-    await Promise.all([
-      prisma.contact.count(),
-      prisma.portfolio.count(),
-      prisma.service.count(),
-      prisma.testimonial.count(),
-    ]);
+type Stats = {
+  contactCount: number;
+  portfolioCount: number;
+  serviceCount: number;
+  testimonialCount: number;
+};
 
-  const recentContacts = await prisma.contact.findMany({
-    orderBy: { createdAt: "desc" },
-    take: 5,
-  });
+export default function AdminDashboard() {
+  const [stats, setStats] = useState<Stats | null>(null);
+  const [recentContacts, setRecentContacts] = useState<Contact[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
-  const stats = [
-    { label: "Pesan Masuk", value: contactCount, icon: MessageSquare },
-    { label: "Portofolio", value: portfolioCount, icon: Briefcase },
-    { label: "Layanan", value: serviceCount, icon: Users },
-    { label: "Testimoni", value: testimonialCount, icon: Star },
-  ];
+  async function fetchDashboardData() {
+    try {
+      const token = localStorage.getItem("adminToken");
+      const headers: Record<string, string> = {};
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+
+      const [statsRes, contactsRes] = await Promise.all([
+        fetch("/api/dashboard/stats", { headers, cache: "no-store" }),
+        fetch("/api/contacts?limit=5", { headers, cache: "no-store" }),
+      ]);
+
+      if (statsRes.ok) {
+        setStats(await statsRes.json());
+      }
+      if (contactsRes.ok) {
+        setRecentContacts(await contactsRes.json());
+      }
+    } catch (error) {
+      console.error("Failed to fetch dashboard data:", error);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
+
+  function handleRefresh() {
+    setRefreshing(true);
+    fetchDashboardData();
+  }
+
+  const statItems = stats
+    ? [
+        { label: "Pesan Masuk", value: stats.contactCount, icon: MessageSquare },
+        { label: "Portofolio", value: stats.portfolioCount, icon: Briefcase },
+        { label: "Layanan", value: stats.serviceCount, icon: Users },
+        { label: "Testimoni", value: stats.testimonialCount, icon: Star },
+      ]
+    : [];
+
+  if (loading)
+    return <div className="p-6 text-center text-muted-foreground">Memuat...</div>;
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
+      {/* Header with Refresh Button */}
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold">Dashboard</h1>
+        <button
+          onClick={handleRefresh}
+          disabled={refreshing}
+          className="inline-flex items-center gap-2 rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-muted disabled:opacity-50"
+        >
+          <RefreshCw className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
+          {refreshing ? "Memperbarui..." : "Refresh"}
+        </button>
+      </div>
 
       {/* Stats */}
       <div className="grid gap-4 md:grid-cols-4 mb-8">
-        {stats.map((stat) => (
+        {statItems.map((stat) => (
           <div key={stat.label} className="rounded-xl border bg-card p-4">
             <div className="flex items-center gap-3">
               <stat.icon className="h-8 w-8 text-primary" />

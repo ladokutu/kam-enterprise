@@ -128,8 +128,12 @@ export async function GET(req: NextRequest) {
       return unauthorizedResponse();
     }
 
+    const searchParams = req.nextUrl.searchParams;
+    const limit = searchParams.get("limit") ? parseInt(searchParams.get("limit")!) : undefined;
+
     const contacts = await prisma.contact.findMany({
       orderBy: { createdAt: "desc" },
+      take: limit,
     });
     return NextResponse.json(contacts);
   } catch (error) {
