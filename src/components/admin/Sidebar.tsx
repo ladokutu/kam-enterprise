@@ -35,8 +35,14 @@ export default function Sidebar() {
   const router = useRouter();
   const [collapsed, setCollapsed] = useState(false);
 
+  // Helper function to delete cookie
+  function deleteCookie(name: string) {
+    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+  }
+
   function handleLogout() {
     localStorage.removeItem("adminToken");
+    deleteCookie("admin_token");
     router.push("/admin/login");
   }
 

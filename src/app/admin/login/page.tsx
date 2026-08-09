@@ -4,6 +4,14 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Lock, Mail } from "lucide-react";
 
+// Helper function to set cookie
+function setCookie(name: string, value: string, days = 7) {
+  const expires = new Date();
+  expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+  // Use SameSite=Lax for better compatibility in development
+  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Lax`;
+}
+
 export default function AdminLoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -41,8 +49,9 @@ export default function AdminLoginPage() {
         return;
       }
 
-      // Store JWT token in localStorage
+      // Store JWT token in both localStorage and cookie
       localStorage.setItem("adminToken", data.token);
+      setCookie("admin_token", data.token, 7); // Cookie expires in 7 days
       
       // Redirect to admin dashboard
       window.location.replace("/admin");
